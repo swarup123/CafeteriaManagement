@@ -1,38 +1,29 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import {
+  BrowserRouter as Router,
+  Route
+} from 'react-router-dom';
+import HomePage from './components/HomePage/HomePage';
+import LoginPage from './components/LoginPage/LoginPage';
 import './App.css';
 
-import {
-  Route,
-  Link,
-  Switch,
-  Redirect
-} from 'react-router-dom';
+const Home = () => (
+  <HomePage />
+);
 
-import Login from './components/Login';
-import Order from './components/Order';
-import OrderReport from './components/OrderReport';
+const Login = () => (
+  <LoginPage />
+);
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <div className="menu">
-            <ul>
-              <li> <Link to="/">Login</Link> </li>
-              <li> <Link to="/order">Order</Link> </li>
-              <li> <Link to="/orderReport">Order Report</Link> </li>
-            </ul>
+      <Router>
+        <div className="App">
+          <Route exact path="/" component={Home} />
+          <Route path="/login" component={Login} />
         </div>
-        <div className="App-intro">
-          <Switch>
-            <Route exact path="/"  component={Login} />
-            <Route path="/order" component={Order} />
-            <Route path="/orderReport" component={OrderReport} />
-            <Redirect to="/" />
-          </Switch>
-        </div>
-      </div>
+      </Router>
     );
   }
 }

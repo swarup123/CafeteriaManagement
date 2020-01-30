@@ -1,12 +1,15 @@
 {
-  "name": "react-router-4-example",
+  "name": "react-login-page",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "react": "16.1.1",
-    "react-dom": "16.1.1",
-    "react-router-dom": "4.2.2",
-    "react-scripts": "1.0.17"
+    "react": "^15.5.4",
+    "react-bootstrap": "^0.31.0",
+    "react-dom": "^15.5.4",
+    "react-router-dom": "^4.1.1"
+  },
+  "devDependencies": {
+    "react-scripts": "0.9.5"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  height: 100%;
+  width: 100%;
 }
 
 .App-logo {
@@ -14,10 +16,6 @@
   color: white;
 }
 
-.App-title {
-  font-size: 1.5em;
-}
-
 .App-intro {
   font-size: large;
 }
@@ -25,28 +23,4 @@
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.menu ul {
-  background-color: #222;
-  margin: 0;
-}
-
-.menu li {
-  font-family: sans-serif;
-  font-size: 1.2em;
-  line-height: 40px;
-  height: 40px;
-  border-bottom: 1px solid #888;
-}
- 
-.menu a {
-  text-decoration: none;
-  color: #fff;
-  display: block;
 }
