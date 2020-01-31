@@ -1,6 +1,11 @@
 import React from 'react';
 import { Paper, withStyles, Grid, TextField, Button, FormControlLabel, Checkbox } from '@material-ui/core';
 import { Face, Fingerprint } from '@material-ui/icons';
+const API = 'http://localhost:8090/cafe/otp/';
+import axios from 'axios';
+import {
+    useHistory
+} from 'react-router-dom';
 
 
 const styles = theme => ({
@@ -23,7 +28,8 @@ class LoginForm extends React.Component {
             loginButton: false,
             errorText: '',
             otp: 4555,
-            otpValue: 0
+            otpValue: 0,
+            userName: ''
         };
     }
 
@@ -36,13 +42,26 @@ class LoginForm extends React.Component {
         }
     }
 
-    handleOtpButton(){
-        this.setState({otpButton: false, loginButton: true})
+    async handleOtpButton () {
+        try {
+            // const phoneNumber = this.state.phone;
+            // const userName = this.state.userName;
+            // const result = await axios.get(API + phoneNumber + userName);
+            // console.log(result);
+            this.setState({otpButton: false, loginButton: true})
+        } catch (error) {
+            // this.setState({
+            //     error,
+            //     isLoading: false
+            // });
+        }
+        
     }
 
     handleLogin(){
+        const history = useHistory();
         if(this.state.otpValue === this.state.otp.toString()){
-            alert('Login Successs');
+            return history.push('/placeOrder');
         }else{
             alert('Failed');
         }
@@ -50,6 +69,10 @@ class LoginForm extends React.Component {
 
     handleOtp(e){
         this.setState({otpValue: e.target.value});
+    }
+
+    handleUserName(e){
+        this.setState({userName: e.target.value});
     }
 
     render() {

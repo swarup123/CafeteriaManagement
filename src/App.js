@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom';
 import HomePage from './components/HomePage/HomePage';
 import LoginPage from './components/LoginPage/LoginPage';
-import MenuDetails from './components/MenuDetails/MenuDetails';
+import OrderPage from './components/OrderPage/OrderPage';
 import './App.css';
 
 const Home = () => (
@@ -21,9 +21,9 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-          <Route exact path="/" component={Home} />
-          <Route path="/login" component={Login} />
-          <Route path="/menuDetails" component={MenuDetails} />
+          <Route exact path="/" component={Login} />
+          {/* <Route path="/login" component={Login} /> */}
+          <Route path="/placeOrder" component={OrderPage} />
         </div>
       </Router>
     );
