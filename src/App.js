@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 import HomePage from './components/HomePage/HomePage';
 import LoginPage from './components/LoginPage/LoginPage';
+import MenuDetails from './components/MenuDetails/MenuDetails';
 import './App.css';
 
 const Home = () => (
@@ -22,6 +23,7 @@ class App extends Component {
         <div className="App">
           <Route exact path="/" component={Home} />
           <Route path="/login" component={Login} />
+          <Route path="/menuDetails" component={MenuDetails} />
         </div>
       </Router>
     );

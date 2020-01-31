@@ -2,6 +2,7 @@ import React from 'react';
 import { Paper, withStyles, Grid, TextField, Button, FormControlLabel, Checkbox } from '@material-ui/core';
 import { Face, Fingerprint } from '@material-ui/icons';
 
+
 const styles = theme => ({
     margin: {
         margin: theme.spacing(2),
@@ -19,16 +20,36 @@ class LoginForm extends React.Component {
         this.state = {
             phone: 0,
             otpButton: true,
-            loginButton: false
+            loginButton: false,
+            errorText: '',
+            otp: 4555,
+            otpValue: 0
         };
     }
 
     handleOnChange(e) {
-        this.setState({ phone: e.target.value })
+        const phoneRegex = /^(?=(?:\D*\d){10,10}\D*$)\+?[0-9]{1,3}[\s-]?(?:\(0?[0-9]{1,5}\)|[0-9]{1,5})[-\s]?[0-9][\d\s-]{5,7}\s?(?:x[\d-]{0,4})?$/;
+        if (e.target.value.match(phoneRegex)) {
+            this.setState({ phone: e.target.value, errorText: '' })
+        } else {
+            this.setState({ errorText: 'Invalid format: ###-###-####' })
+        }
     }
 
     handleOtpButton(){
         this.setState({otpButton: false, loginButton: true})
+    }
+
+    handleLogin(){
+        if(this.state.otpValue === this.state.otp.toString()){
+            alert('Login Successs');
+        }else{
+            alert('Failed');
+        }
+    }
+
+    handleOtp(e){
+        this.setState({otpValue: e.target.value});
     }
 
     render() {
@@ -49,7 +70,7 @@ class LoginForm extends React.Component {
                             <Fingerprint />
                         </Grid>
                         <Grid item md={true} sm={true} xs={true}>
-                            <TextField id="number" label="Phone Number" type="number" onChange={this.handleOnChange.bind(this)} fullWidth autoFocus required />
+                            <TextField id="phoneNumber" label="Phone Number" type="number" onChange={this.handleOnChange.bind(this)} helperText= {this.state.errorText} fullWidth autoFocus required />
                         </Grid>
                     </Grid>
                     { !this.state.otpButton &&
@@ -58,7 +79,7 @@ class LoginForm extends React.Component {
                                 <Fingerprint />
                             </Grid>
                             <Grid item md={true} sm={true} xs={true}>
-                                <TextField id="number" label="Otp" type="number" fullWidth required />
+                                <TextField id="number" label="Otp" type="number" onChange={this.handleOtp.bind(this)} fullWidth required />
                             </Grid> 
                         </Grid>
                     }
@@ -74,7 +95,7 @@ class LoginForm extends React.Component {
                     </Grid>
                     { this.state.loginButton &&
                         <Grid container justify="center" style={{ marginTop: '10px' }}>
-                            <Button variant="outlined" color="primary" style={{ textTransform: "none" }}>Login</Button>
+                            <Button variant="outlined" color="primary" style={{ textTransform: "none" }} onClick={this.handleLogin.bind(this)}>Login</Button>
                         </Grid>
                     }
                     { this.state.otpButton && this.state.phone.length === 10 &&
