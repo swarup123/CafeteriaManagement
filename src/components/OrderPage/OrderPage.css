@@ -9,3 +9,44 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance:textfield;
 }
+
+.order-table-panel {
+    width: 100%;
+    padding: 20px;
+}
+
+.order-table-paper {
+    width: 100%;
+}
+
+.order-table {
+    width: 380px;
+    border: 1px solid #ccc;
+    margin: auto;
+}
+
+.order-table-visuallyHidden {
+    border: 0;
+    clip: 'rect(0 0 0 0)';
+    height: 1;
+    margin: -1;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    top: 20;
+    width: 1;
+    display: none;
+  }
+
+.place-order-button {
+  margin-top: 20px !important; 
+}
+
+.MuiTableCell-sizeSmall.MuiTableCell-paddingCheckbox {
+  width: 24px;
+  padding: 10px 12px 10px 16px !important;
+}
+
+.MuiTableCell-head {
+  background: lightblue;
+}

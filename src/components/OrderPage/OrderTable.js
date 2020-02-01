@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { lighten, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -13,21 +12,24 @@ import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 // import Tooltip from '@material-ui/core/Tooltip';
 import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import './OrderPage.css';
+import LogoutMenu from './OrderDropdown';
 
-function createData(name, price) {
-  return { name, price };
-}
+// function createData(name, price) {
+//   return { name, price };
+// }
 
-const rows = [
-  createData('Cupcake', 305),
-  createData('Donut', 452),
-  createData('Eclair', 262),
-  createData('Frozen yoghurt', 159),
-  createData('Gingerbread', 356),
-  createData('Honeycomb', 408),
-  createData('Ice cream sandwich', 237),
-];
+// const rows = [
+//   createData('Cupcake', 305),
+//   createData('Donut', 452),
+//   createData('Eclair', 262),
+//   createData('Frozen yoghurt', 159),
+//   createData('Gingerbread', 356),
+//   createData('Honeycomb', 408),
+//   createData('Ice cream sandwich', 237),
+// ];
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -54,21 +56,21 @@ function getSorting(order, orderBy) {
 }
 
 const headCells = [
-  { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
-  { id: 'price', numeric: true, disablePadding: false, label: 'Price' },
-  { id: 'quantity', disablePadding: false, label: 'Quantity' },
+  { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
+  { id: 'price', numeric: true, disablePadding: true, label: 'Price' },
+  { id: 'ordered', disablePadding: true, label: 'Quantity' },
+  { id: 'id', disablePadding: true, label: 'id', hidden:true},
+  { id: 'available', disablePadding: true, label: 'available', hidden:true },
 ];
 
 class EnhancedTableHead extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            menuData: []
-        };
     }
+
     render() {
-        const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = this.props;
+        const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = this.props;
         const createSortHandler = property => event => {
             onRequestSort(event, property);
         };
@@ -90,6 +92,7 @@ class EnhancedTableHead extends React.Component {
                     align='left'
                     padding={headCell.disablePadding ? 'none' : 'default'}
                     sortDirection={orderBy === headCell.id ? order : false}
+                    hidden={headCell.hidden}
                 >
                     <TableSortLabel
                     active={orderBy === headCell.id}
@@ -98,7 +101,7 @@ class EnhancedTableHead extends React.Component {
                     >
                     {headCell.label}
                     {orderBy === headCell.id ? (
-                        <span className={classes.visuallyHidden}>
+                        <span className='order-table-visuallyHidden'>
                         {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                         </span>
                     ) : null}
@@ -112,7 +115,6 @@ class EnhancedTableHead extends React.Component {
 }
 
 EnhancedTableHead.propTypes = {
-  classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
@@ -121,182 +123,245 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: '100%',
-  },
-  paper: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  },
-  table: {
-    width: 380,
-    border: '1px solid #ccc',
-    margin: 'auto',
-  },
-  visuallyHidden: {
-    border: 0,
-    clip: 'rect(0 0 0 0)',
-    height: 1,
-    margin: -1,
-    overflow: 'hidden',
-    padding: 0,
-    position: 'absolute',
-    top: 20,
-    width: 1,
-  },
-}));
 
-export default function EnhancedTable() {
-  const classes = useStyles();
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('price');
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [dense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
+export default class EnhancedTable extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      order: 'asc',
+      orderBy: 'id',
+      selected: [],
+      page: 0,
+      dense: true,
+      rowsPerPage: 5,
+      menuData: [],
+      showalert: false
+    };
+    this.userId = '';
+    this.menuId = '';
+    this.estimatedTime = ''
+  }
+
+  componentDidMount() {
+    fetch("http://localhost:8090/cafe/order/display/1")
+    .then(res => res.json())
+    .then(res => {
+      console.log(res);
+      this.setState({ menuData: res.itemQuantities });
+      this.userId = res.userId;
+      this.menuId = res.menuId
+    })
+  }
+
+  handleRequestSort = (event, property) => {
+    const isAsc = this.state.orderBy === property && this.state.order === 'asc';
+    this.setState({
+      order: isAsc ? 'desc' : 'asc',
+      orderBy: 'price'
+    });
   };
 
-  const handleSelectAllClick = event => {
+  handleSelectAllClick = event => {
     if (event.target.checked) {
-      const newSelecteds = rows.map(n => n.name);
-      setSelected(newSelecteds);
+      const newSelecteds = this.state.menuData.map(n => n.itemName);
+      this.setState({ selected: newSelecteds});
       return;
     }
-    setSelected([]);
+    this.setState({ selected: []});
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  handleClick = (event, row) => {
+    const selectedIndex = this.state.selected.indexOf(row.itemName);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
+      newSelected = newSelected.concat(this.state.selected, row.itemName);
+    } else {
+      let newTableData = this.state.menuData;
+      newTableData.map((current,index) => {
+        if(current.id === row.id) {
+          newTableData[index]['ordered'] = 0
+        }
+      });
+      
+      this.setState({menuData: newTableData});       
+      if (selectedIndex === 0) {
+        newSelected = newSelected.concat(this.state.selected.slice(1));
+      } else if (selectedIndex === this.state.selected.length - 1) {
+        newSelected = newSelected.concat(this.state.selected.slice(0, -1));
+      } else if (selectedIndex > 0) {
+        newSelected = newSelected.concat(
+          this.state.selected.slice(0, selectedIndex),
+          this.state.selected.slice(selectedIndex + 1),
+        );
+      }
+    } 
 
-    setSelected(newSelected);
+    this.setState({ selected: newSelected });
   };
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+  handleChangePage = (event, newPage) => {
+    this.setState({ page: newPage });
   };
 
-  const handleChangeRowsPerPage = event => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const handleQtyChange = (event, index) => {
-    //   let newTableData = this.state.tableData
-    //   newTableData[index]['clientId'] = rowValue;
-    //   this.setState({tableData: newTableData}); //New table set and view updated
-    console.log(event, index)
+  handleQtyChange = (event, rowId) => {
+    let newTableData = this.state.menuData;
+    newTableData.map((current,index) => {
+      if(current.id === rowId) {
+        newTableData[index]['ordered'] = event.target.value;
+      }
+    });
+    
+    this.setState({menuData: newTableData}); //New table set and view updated
+    
   }
 
-//   const handleChangeDense = event => {
-//     setDense(event.target.checked);
-//   };
+  placeOrder = () => {
+    const selectedItems = this.state.selected;
+    const menuData = this.state.menuData;
+    const orderData = [];
 
-  const isSelected = name => selected.indexOf(name) !== -1;
+    menuData.map(current => {
+      if(selectedItems.indexOf(current.itemName) > -1 && current.ordered > 0) {
+        orderData.push(current);
+      }
+    });
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    if(orderData.length === 0) {
+      alert('Please select items and quantity of items to want to order');
+      return;
+    }
 
-  return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              classes={classes}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+    const payload = {
+      "userId": this.userId,
+      "menuId": this.menuId,
+      "itemQuantities": orderData,
+      "phone": null,
+      "orderTime": null,
+      "deliverTime": null,
+      "total": null,
+      "orderState": null
+    }
+    fetch('http://localhost:8090/cafe/order/place', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
+    }).then(res => {
+        this.estimatedTime = res.deliverTime;
+        let newTableData = this.state.menuData;
+        newTableData.map((current) => {
+            current['ordered'] = 0;
+        });
+        this.setState({showalert: true, order: 'asc',
+        orderBy: 'id',
+        selected: [],
+        page: 0
+        });
+        setTimeout(() => {
+          this.setState({showalert: false, menuData: newTableData})
+        },3000)
+    })
+  }
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={event => handleClick(event, row.name)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.name}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
+  render() {
+    const isSelected = name => this.state.selected.indexOf(name) !== -1;
+
+    const emptyRows = this.state.rowsPerPage - Math.min(this.state.rowsPerPage, this.state.menuData.length - this.state.page * this.state.rowsPerPage);
+
+    return (
+      <div className='order-table-panel'>
+        {this.state.showalert && (<Alert severity="info">
+          <AlertTitle>Info</AlertTitle>
+          {`Your order has been placed!!`}
+        </Alert>)}
+        <h2>Today's menu</h2>
+        <LogoutMenu />
+        <Paper className='order-table-paper'>
+          <TableContainer>
+            <Table
+              className='order-table'
+              aria-labelledby="tableTitle"
+              size={this.state.dense ? 'small' : 'medium'}
+              aria-label="enhanced table"
+            >
+              <EnhancedTableHead
+                numSelected={this.state.selected.length}
+                order={this.state.order}
+                orderBy={this.state.orderBy}
+                onSelectAllClick={this.handleSelectAllClick}
+                onRequestSort={this.handleRequestSort}
+                rowCount={this.state.menuData.length}
+              />
+              <TableBody>
+                {stableSort(this.state.menuData, getSorting(this.state.order, this.state.orderBy))
+                  .slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
+                  .map((row, index) => {
+                    const isItemSelected = isSelected(row.itemName);
+                    const labelId = `enhanced-table-checkbox-${index}`;
+  
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.itemName}
+                        selected={isItemSelected}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            onClick={event => this.handleClick(event, row)}
+                            checked={isItemSelected}
+                            inputProps={{ 'aria-labelledby': labelId }}
+                          />
+                        </TableCell>
+                        <TableCell component="th" id={labelId} scope="row" padding="none">
+                          {row.itemName}
+                        </TableCell>
+                        <TableCell>{row.price}</TableCell>
+                        <TableCell>
+                          <TextField
+                          id="quantity"
+                          value={row.ordered}
+                          InputLabelProps={{
+                              shrink: true,
+                          }}
+                          onChange ={(e)=> this.handleQtyChange(e, row.id)}
+                          />
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {row.name}
-                      </TableCell>
-                      <TableCell>{row.price}</TableCell>
-                      <TableCell>
-                        <TextField
-                        id="standard-number"
-                        label="Number"
-                        type="number"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                        onChange ={(e)=>handleQtyChange(e, index)}
-                        />
-                    </TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
-      {/* <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      /> */}
-    </div>
-  );
+                      <TableCell hidden>{row.id}</TableCell>
+                      <TableCell hidden>{row.available}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: (this.state.dense ? 33 : 53) * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={this.state.menuData.length}
+            rowsPerPage={this.state.rowsPerPage}
+            page={this.state.page}
+            onChangePage={this.handleChangePage}
+          />
+        </Paper>
+        <Button variant="contained" color="primary" 
+          disabled={this.state.selected.length > 0 ? false : true} 
+          onClick={() => this.placeOrder()}
+          className='place-order-button'>
+          Place Order
+        </Button>
+      </div>
+    );
+  }
 }
