@@ -1,12 +1,16 @@
 import React from 'react';
 import { Paper, withStyles, Grid, TextField, Button, FormControlLabel, Checkbox } from '@material-ui/core';
 import { Face, Fingerprint } from '@material-ui/icons';
-const API = 'http://localhost:8090/cafe/otp/';
+const API = 'http://localhost:8090/cafe/otp';
 import axios from 'axios';
 import {
-    useHistory
+    Link
 } from 'react-router-dom';
 
+const headers = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*'
+}
 
 const styles = theme => ({
     margin: {
@@ -17,7 +21,6 @@ const styles = theme => ({
     }
 });
 
-
 class LoginForm extends React.Component {
     constructor (args) {
         super(args);
@@ -27,9 +30,9 @@ class LoginForm extends React.Component {
             otpButton: true,
             loginButton: false,
             errorText: '',
-            otp: 4555,
             otpValue: 0,
-            userName: ''
+            userName: '',
+            redirect: '/'
         };
     }
 
@@ -43,28 +46,38 @@ class LoginForm extends React.Component {
     }
 
     async handleOtpButton () {
-        try {
-            // const phoneNumber = this.state.phone;
-            // const userName = this.state.userName;
-            // const result = await axios.get(API + phoneNumber + userName);
-            // console.log(result);
-            this.setState({otpButton: false, loginButton: true})
-        } catch (error) {
-            // this.setState({
-            //     error,
-            //     isLoading: false
-            // });
-        }
-        
+        this.setState({otpButton: false, loginButton: true})
+        const phoneNumber = this.state.phone;
+        const userName = this.state.userName;
+        axios.get(API + '/' + '+91'+phoneNumber + '/' + userName, { headers: headers})
+        .then((response) =>{ 
+               alert('OTP successfully to your Mobile');
+        }).catch((error) => { console.log(error) });        
     }
 
     handleLogin(){
-        const history = useHistory();
-        if(this.state.otpValue === this.state.otp.toString()){
-            return history.push('/placeOrder');
-        }else{
-            alert('Failed');
-        }
+        const data = {
+            "otp": this.state.otpValue,
+            "number": '+91'+this.state.phone
+        }          
+        axios.post(API, data, {
+            headers: headers
+        })
+        .then((response) => {
+            if (response && response.status === 200 && response.data.userType === 'CUSTOMER') {
+                this.setState({redirect: '/placeOrder'}); 
+                localStorage.setItem('phoneNo', this.state.phone);
+                localStorage.setItem('userName', this.state.userName);
+                localStorage.setItem('userType', response.data.userType);
+            } else if(response && response.status === 200 && response.data.userType === 'VENDOR'){
+                this.setState({redirect: '/menuPage'}); 
+            } else {
+                this.setState({redirect: '/'});
+            }                       
+        })
+        .catch((error) => {
+             console.log(error)
+        });
     }
 
     handleOtp(e){
@@ -85,7 +98,7 @@ class LoginForm extends React.Component {
                             <Face />
                         </Grid>
                         <Grid item md={true} sm={true} xs={true}>
-                            <TextField id="username" label="Username" type="string" fullWidth autoFocus required />
+                            <TextField id="username" label="Username" type="string" onChange={this.handleUserName.bind(this)} fullWidth autoFocus required />
                         </Grid>
                     </Grid>
                     <Grid container spacing={8} alignItems="flex-end">
@@ -118,7 +131,7 @@ class LoginForm extends React.Component {
                     </Grid>
                     { this.state.loginButton &&
                         <Grid container justify="center" style={{ marginTop: '10px' }}>
-                            <Button variant="outlined" color="primary" style={{ textTransform: "none" }} onClick={this.handleLogin.bind(this)}>Login</Button>
+                            <Button variant="outlined" color="primary" style={{ textTransform: "none" }} onClick={this.handleLogin.bind(this)} component={Link} to={this.state.redirect}>Login</Button>
                         </Grid>
                     }
                     { this.state.otpButton && this.state.phone.length === 10 &&

@@ -6,6 +6,8 @@ import {
 import HomePage from './components/HomePage/HomePage';
 import LoginPage from './components/LoginPage/LoginPage';
 import OrderPage from './components/OrderPage/OrderPage';
+import MenuPage from './components/MenuPage/MenuPage';
+import MyOrderPage from './components/MyOrdersPage/MyOrdersPage';
 import './App.css';
 
 const Home = () => (
@@ -22,8 +24,9 @@ class App extends Component {
       <Router>
         <div className="App">
           <Route exact path="/" component={Login} />
-          {/* <Route path="/login" component={Login} /> */}
           <Route path="/placeOrder" component={OrderPage} />
+          <Route path="/menuPage" component={MenuPage} />
+          <Route path="/myOrderPage" component={MyOrderPage} />
         </div>
       </Router>
     );
