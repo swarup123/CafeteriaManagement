@@ -11,10 +11,8 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 // import Tooltip from '@material-ui/core/Tooltip';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import './MenuPage.css';
+import './MyOrdersPage.css';
 import LogoutMenu from '../OrderPage/OrderDropdown';
 
 // function createData(name, price) {
@@ -58,10 +56,9 @@ function getSorting(order, orderBy) {
 const headCells = [
   { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
   { id: 'price', numeric: true, disablePadding: true, label: 'Price' },
-  { id: 'availableQuantity', disablePadding: true, label: 'Quantity' },
-  { id: 'maxQuantity', disablePadding: true, label: 'MaxQuantity' },
-  { id: 'id', disablePadding: true, label: 'id', hidden:true}
-  //{ id: 'available', disablePadding: true, label: 'available', hidden:true },
+  { id: 'ordered', disablePadding: true, label: 'Quantity' },
+  { id: 'id', disablePadding: true, label: 'id', hidden:true},
+  { id: 'available', disablePadding: true, label: 'available', hidden:true },
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -140,16 +137,18 @@ export default class EnhancedTable extends React.Component {
       showalert: false
     };
     this.userId = '';
+    this.menuId = '';
     this.estimatedTime = ''
   }
 
   componentDidMount() {
-    fetch("http://localhost:8090/cafe/dm/1")
+    fetch("http://localhost:8090/cafe/order/display/1")
     .then(res => res.json())
     .then(res => {
-      console.log(res);
-      this.setState({ menuData: res.items });
-      this.userId = res.vendorId;
+      console.log(res);      
+      this.setState({ menuData: res.itemQuantities });
+      this.userId = res.userId;
+      this.menuId = res.menuId
     })
   }
 
@@ -163,115 +162,17 @@ export default class EnhancedTable extends React.Component {
 
   handleSelectAllClick = event => {
     if (event.target.checked) {
-      const newSelecteds = this.state.menuData.map(n => n.name);
+      const newSelecteds = this.state.menuData.map(n => n.itemName);
       this.setState({ selected: newSelecteds});
       return;
     }
     this.setState({ selected: []});
   };
 
-  handleClick = (event, row) => {
-    const selectedIndex = this.state.selected.indexOf(row.name);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(this.state.selected, row.name);
-    } else {
-      let newTableData = this.state.menuData;
-      newTableData.map((current,index) => {
-        if(current.id === row.id) {
-          newTableData[index]['ordered'] = 0
-        }
-      });
-      
-      this.setState({menuData: newTableData});       
-      if (selectedIndex === 0) {
-        newSelected = newSelected.concat(this.state.selected.slice(1));
-      } else if (selectedIndex === this.state.selected.length - 1) {
-        newSelected = newSelected.concat(this.state.selected.slice(0, -1));
-      } else if (selectedIndex > 0) {
-        newSelected = newSelected.concat(
-          this.state.selected.slice(0, selectedIndex),
-          this.state.selected.slice(selectedIndex + 1),
-        );
-      }
-    } 
-
-    this.setState({ selected: newSelected });
-  };
-
   handleChangePage = (event, newPage) => {
     this.setState({ page: newPage });
   };
-
-  handleQtyChange = (event, rowId) => {
-    let newTableData = this.state.menuData;
-    newTableData.map((current,index) => {
-      if(current.id === rowId) {
-        newTableData[index]['availableQuantity'] = event.target.value;
-      }
-    });
-    
-    this.setState({menuData: newTableData}); //New table set and view updated
-    
-  }
-
-  handleMaxQtyChange = (event, rowId) => {
-    let newTableData = this.state.menuData;
-    newTableData.map((current,index) => {
-      if(current.id === rowId) {
-        newTableData[index]['maxQuantity'] = event.target.value;
-      }
-    });
-    
-    this.setState({menuData: newTableData}); //New table set and view updated
-    
-  }
-
-  placeOrder = () => {
-    const selectedItems = this.state.selected;
-    const menuData = this.state.menuData;
-    const orderData = [];
-
-    menuData.map(current => {
-      if(selectedItems.indexOf(current.name) > -1 ) {
-        orderData.push(current);
-      }
-    });
-
-    if(orderData.length === 0) {
-      alert('Please select items and quantity of items to create menu');
-      return;
-    }
-
-    const payload = {
-      "id": null,
-      "vendorId": this.userId,
-      "items": orderData,
-      "validFor":null     
-    }
-    fetch('http://localhost:8090/cafe/dm', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload)
-    }).then(res => {
-        let newTableData = this.state.menuData;
-       /*  newTableData.map((current) => {
-            current['ordered'] = 0;
-        }); */
-        this.setState({showalert: true, order: 'asc',
-        orderBy: 'id',
-        selected: [],
-        page: 0
-        });
-        setTimeout(() => {
-          this.setState({showalert: false, menuData: newTableData})
-        },3000)
-    })
-  }
+  
 
   render() {
     const isSelected = name => this.state.selected.indexOf(name) !== -1;
@@ -282,9 +183,8 @@ export default class EnhancedTable extends React.Component {
       <div className='order-table-panel'>
         {this.state.showalert && (<Alert severity="info">
           <AlertTitle>Info</AlertTitle>
-          {`Today's menu created successfully!!`}
+          {`Your order has been placed!!`}
         </Alert>)}
-        <h2>Today's menu</h2>
         <LogoutMenu />
         <Paper className='order-table-paper'>
           <TableContainer>
@@ -306,48 +206,20 @@ export default class EnhancedTable extends React.Component {
                 {stableSort(this.state.menuData, getSorting(this.state.order, this.state.orderBy))
                   .slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
                   .map((row, index) => {
-                    const isItemSelected = isSelected(row.name);
+                    const isItemSelected = isSelected(row.itemName);
                     const labelId = `enhanced-table-checkbox-${index}`;
   
                     return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={row.name}
-                        selected={isItemSelected}
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            onClick={event => this.handleClick(event, row)}
-                            checked={isItemSelected}
-                            inputProps={{ 'aria-labelledby': labelId }}
-                          />
-                        </TableCell>
+                      <TableRow>
                         <TableCell component="th" id={labelId} scope="row" padding="none">
-                          {row.name}
+                          {row.itemName}
                         </TableCell>
                         <TableCell>{row.price}</TableCell>
                         <TableCell>
-                          <TextField
-                          id="availableQuantity"
-                          value={row.availableQuantity}
-                          InputLabelProps={{
-                              shrink: true,
-                          }}
-                          onChange ={(e)=> this.handleQtyChange(e, row.id)}
-                          />
+                          {row.ordered}                          
                       </TableCell>
                       <TableCell hidden>{row.id}</TableCell>
-                      <TableCell>
-                        <TextField id="maxQuantity"
-                          value={row.maxQuantity}
-                          InputLabelProps={{
-                              shrink: true,
-                          }}
-                          onChange ={(e)=> this.handleMaxQtyChange(e, row.id)} />
-                      </TableCell>
+                      <TableCell hidden>{row.available}</TableCell>
                       </TableRow>
                     );
                   })}
@@ -367,13 +239,7 @@ export default class EnhancedTable extends React.Component {
             page={this.state.page}
             onChangePage={this.handleChangePage}
           />
-        </Paper>
-        <Button variant="contained" color="primary" 
-          disabled={this.state.selected.length > 0 ? false : true} 
-          onClick={() => this.placeOrder()}
-          className='place-order-button'>
-          Create Menu
-        </Button>
+        </Paper>        
       </div>
     );
   }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
 import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -34,14 +34,6 @@ function createData(name, calories, data) {
     return { name, calories, data };
 }
   
-const rows = [
-    createData('Frozen yoghurt', 159, 'blah'),
-    createData('Ice cream sandwich', 237, 'nah'),
-    createData('Eclair', 262, 'ooo'),
-    createData('Cupcake', 305, 'new'),
-    createData('Gingerbread', 356, 'plz'),
-];
-
 const ExpansionPanel = withStyles({
   root: {
     border: '1px solid rgba(0, 0, 0, .125)',
@@ -83,9 +75,12 @@ const ExpansionPanelDetails = withStyles(theme => ({
   },
 }))(MuiExpansionPanelDetails);
 
-export default function CustomizedExpansionPanels() {
+const CustomizedExpansionPanels = () => {
   const [expanded, setExpanded] = React.useState('panel1');
   const [popUpDetails, setDetails] = React.useState('');
+  const [placedRows, setPlacedRows] = React.useState([]);  
+  const [inProgressRows, setInProgressRows] = React.useState([]);
+  const [deiverOrderRows, setDeliverOrderRows] = React.useState([]);
 
   const handleChange = panel => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -102,7 +97,29 @@ export default function CustomizedExpansionPanels() {
     setAnchorEl(null);
   };
 
+  const handleOnClickAccept = () =>{
+    console.log('dsa');
+  }
+
+  const handleOnClickCancel = () =>{
+    
+  }
+
   const open = Boolean(anchorEl);
+
+  useEffect(() => {
+    fetch("http://localhost:8090/cafe/vendor/orders/1/{orderState}?orderState=PLACED")
+    .then(res => res.json())
+    .then(res => setPlacedRows(res[0].itemQuantities))
+
+    fetch("http://localhost:8090/cafe/vendor/orders/1/{orderState}?orderState=GETTING_PREPARED")
+    .then(res => res.json())
+    .then(res => setInProgressRows([]))
+
+    fetch("http://localhost:8090/cafe/vendor/orders/1/{orderState}?orderState=NOTIFIED_DELIVERY")
+    .then(res => res.json())
+    .then(res => setDeliverOrderRows([]))
+  });
 
 
   return (
@@ -124,12 +141,12 @@ export default function CustomizedExpansionPanels() {
                     </TableRow>
                     </TableHead>
                     <TableBody>
-                    {rows.map(row => (
-                        <TableRow key={row.name}>
+                    {placedRows.map(row => (
+                        <TableRow key={row.id}>
                         <TableCell component="th" scope="row">
-                            {row.name}
+                            {row.id}
                         </TableCell>
-                        <TableCell >{row.calories}</TableCell>
+                        <TableCell >{row.itemName}</TableCell>
                         <TableCell >
                             <Info className={classes.point}
                                     onMouseEnter={(e) => handlePopoverOpen(e)}
@@ -162,7 +179,7 @@ export default function CustomizedExpansionPanels() {
                         </TableCell>
                         <TableCell >
                             <Cancel className={classes.point} />
-                            <CheckCircle className={classes.point} />
+                            <CheckCircle onClick={handleOnClickAccept} className={classes.point} />
                         </TableCell>
                         <TableCell hidden>
                             {row.calories}
@@ -190,7 +207,7 @@ export default function CustomizedExpansionPanels() {
                     </TableRow>
                     </TableHead>
                     <TableBody>
-                    {rows.map(row => (
+                    {inProgressRows.map(row => (
                         <TableRow key={row.name}>
                         <TableCell component="th" scope="row">
                             {row.name}
@@ -226,7 +243,7 @@ export default function CustomizedExpansionPanels() {
                     </TableRow>
                     </TableHead>
                     <TableBody>
-                    {rows.map(row => (
+                    {deiverOrderRows.map(row => (
                         <TableRow key={row.name}>
                         <TableCell component="th" scope="row">
                             {row.name}
@@ -250,3 +267,5 @@ export default function CustomizedExpansionPanels() {
     </div>
   );
 }
+
+export default  CustomizedExpansionPanels;

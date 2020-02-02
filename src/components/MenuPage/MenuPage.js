@@ -6,11 +6,7 @@ class MenuPage extends Component {
   render() {
     return (
       <div className="MenuPage">
-        <h2>Build today's menu</h2>
-        <EnhancedTable />
-        <Button variant="contained" color="primary" disabled={false}>
-          Save Menu
-        </Button>
+        <EnhancedTable />        
       </div>
     );
   }
