@@ -9,25 +9,14 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
-// import Tooltip from '@material-ui/core/Tooltip';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import './MyOrdersPage.css';
 import LogoutMenu from '../OrderPage/OrderDropdown';
-
-// function createData(name, price) {
-//   return { name, price };
-// }
-
-// const rows = [
-//   createData('Cupcake', 305),
-//   createData('Donut', 452),
-//   createData('Eclair', 262),
-//   createData('Frozen yoghurt', 159),
-//   createData('Gingerbread', 356),
-//   createData('Honeycomb', 408),
-//   createData('Ice cream sandwich', 237),
-// ];
+import { Info } from '@material-ui/icons';
+import Popover from '@material-ui/core/Popover';
+import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -54,18 +43,22 @@ function getSorting(order, orderBy) {
 }
 
 const headCells = [
-  { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
-  { id: 'price', numeric: true, disablePadding: true, label: 'Price' },
-  { id: 'ordered', disablePadding: true, label: 'Quantity' },
-  { id: 'id', disablePadding: true, label: 'id', hidden:true},
-  { id: 'available', disablePadding: true, label: 'available', hidden:true },
+  { id: 'customerOrderId', disablePadding: true, label: 'id'},
+  { id: 'orderTime', numeric: false, disablePadding: true, label: 'Ordered At' },
+  { id: 'total', numeric: true, disablePadding: true, label: 'Price' },
+  { id: 'orderedState', disablePadding: true, label: 'Status' },
+  { id: 'details', disablePadding: true, label: 'Details'},
+  { id: 'action', disablePadding: true, label: 'Action'}
 ];
+
+
 
 class EnhancedTableHead extends React.Component {
 
     constructor(props) {
         super(props);
     }
+    
 
     render() {
         const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = this.props;
@@ -76,14 +69,6 @@ class EnhancedTableHead extends React.Component {
         return (
             <TableHead>
             <TableRow>
-                <TableCell padding="checkbox">
-                <Checkbox
-                    indeterminate={numSelected > 0 && numSelected < rowCount}
-                    checked={rowCount > 0 && numSelected === rowCount}
-                    onChange={onSelectAllClick}
-                    inputProps={{ 'aria-label': 'select all desserts' }}
-                />
-                </TableCell>
                 {headCells.map(headCell => (
                 <TableCell
                     key={headCell.id}
@@ -121,8 +106,6 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-
-
 export default class EnhancedTable extends React.Component {
   constructor(props) {
     super(props);
@@ -136,17 +119,58 @@ export default class EnhancedTable extends React.Component {
       menuData: [],
       showalert: false
     };
-    this.userId = '';
+    this.userId = localStorage.getItem('userId');
     this.menuId = '';
     this.estimatedTime = ''
   }
-
+  cancelOrder(order) {  
+    const payload = {
+        "action": "CANCEL",
+        "customerOrderId": order.customerOrderId,
+        "deliverTime": order.deliverTime,
+        "orderState": order.orderState,
+        "orderTime": order.orderTime
+      }
+        
+    fetch('http://10.16.34.17:8090/cafe/order/cancel', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
+    }).then(res => {
+        let newTableData = this.state.menuData;
+        let someData = newTableData.map((current) => {
+          if(current.customerOrderId === order.customerOrderId )
+            current['orderedState'] = res.orderState;
+        });
+        this.setState({showalert: true, order: 'asc',
+        orderBy: 'id',
+        selected: [],
+        page: 0
+        });
+        setTimeout(() => {
+          this.setState({showalert: false, menuData: someData})
+        },3000)
+    })
+  }
+  
+  getDetails(menuItems) {
+    if(menuItems.length ===0 ){
+      return;
+    }
+    let itemStr = '';
+    menuItems.map((item)=>{
+      itemStr = `${itemStr} Name : ${item.itemName} , Price : ${item.price}  , Quantity : ${item.ordered}`;
+    });
+    return itemStr;
+  }
   componentDidMount() {
-    fetch("http://localhost:8090/cafe/order/display/1")
+    fetch(`http://10.16.34.17:8090/cafe/orders/customer/${this.userId}`)
     .then(res => res.json())
-    .then(res => {
-      console.log(res);      
-      this.setState({ menuData: res.itemQuantities });
+    .then(res => {    
+      this.setState({ menuData: res });
       this.userId = res.userId;
       this.menuId = res.menuId
     })
@@ -173,7 +197,6 @@ export default class EnhancedTable extends React.Component {
     this.setState({ page: newPage });
   };
   
-
   render() {
     const isSelected = name => this.state.selected.indexOf(name) !== -1;
 
@@ -206,21 +229,31 @@ export default class EnhancedTable extends React.Component {
                 {stableSort(this.state.menuData, getSorting(this.state.order, this.state.orderBy))
                   .slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
                   .map((row, index) => {
-                    const isItemSelected = isSelected(row.itemName);
                     const labelId = `enhanced-table-checkbox-${index}`;
   
                     return (
                       <TableRow>
+                        <TableCell component="th" id={labelId} scope="row" padding="none">{row.customerOrderId}</TableCell>
                         <TableCell component="th" id={labelId} scope="row" padding="none">
-                          {row.itemName}
+                          {row.orderTime}
                         </TableCell>
-                        <TableCell>{row.price}</TableCell>
-                        <TableCell>
-                          {row.ordered}                          
+                        <TableCell component="th" id={labelId} scope="row" padding="none">{row.total}</TableCell>                       
+                      <TableCell component="th" id={labelId} scope="row" padding="none">
+                        {row.orderState}
+                      </TableCell>    
+                      <TableCell component="th" id={labelId} scope="row" padding="none">     {this.getDetails(row.itemQuantities)}          
+                      </TableCell>                    
+                      <TableCell component="th" id={labelId} scope="row" padding="none">
+                        <Button variant="contained" color="primary"           
+          className='place-order-button'
+            disabled={row.orderState === 'PLACED' ? false : true} 
+          onClick={() => this.cancelOrder(row)}
+          >
+          cancel
+          </Button>
+
                       </TableCell>
-                      <TableCell hidden>{row.id}</TableCell>
-                      <TableCell hidden>{row.available}</TableCell>
-                      </TableRow>
+                    </TableRow>
                     );
                   })}
                 {emptyRows > 0 && (

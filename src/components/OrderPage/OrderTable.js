@@ -10,26 +10,13 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-// import Tooltip from '@material-ui/core/Tooltip';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import './OrderPage.css';
 import LogoutMenu from './OrderDropdown';
 
-// function createData(name, price) {
-//   return { name, price };
-// }
 
-// const rows = [
-//   createData('Cupcake', 305),
-//   createData('Donut', 452),
-//   createData('Eclair', 262),
-//   createData('Frozen yoghurt', 159),
-//   createData('Gingerbread', 356),
-//   createData('Honeycomb', 408),
-//   createData('Ice cream sandwich', 237),
-// ];
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -144,12 +131,12 @@ export default class EnhancedTable extends React.Component {
   }
 
   componentDidMount() {
-    fetch("http://localhost:8090/cafe/order/display/1")
+    fetch(`http://10.16.34.17:8090/cafe/order/display/${localStorage.userId}`)
     .then(res => res.json())
     .then(res => {
       console.log(res);
       this.setState({ menuData: res.itemQuantities });
-      this.userId = res.userId;
+      this.userId = localStorage.userId;
       this.menuId = res.menuId
     })
   }
@@ -243,7 +230,7 @@ export default class EnhancedTable extends React.Component {
       "total": null,
       "orderState": null
     }
-    fetch('http://localhost:8090/cafe/order/place', {
+    fetch('http://10.16.34.17:8090/cafe/order/place', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

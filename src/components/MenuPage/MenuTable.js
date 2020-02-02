@@ -139,12 +139,12 @@ export default class EnhancedTable extends React.Component {
       menuData: [],
       showalert: false
     };
-    this.userId = '';
+    this.userId = localStorage.getItem('userId');
     this.estimatedTime = ''
   }
 
   componentDidMount() {
-    fetch("http://localhost:8090/cafe/dm/1")
+    fetch(`http://10.16.34.17:8090/cafe/dm/${this.userId}`)
     .then(res => res.json())
     .then(res => {
       console.log(res);
@@ -250,7 +250,7 @@ export default class EnhancedTable extends React.Component {
       "items": orderData,
       "validFor":null     
     }
-    fetch('http://localhost:8090/cafe/dm', {
+    fetch('http://10.16.34.17:8090/cafe/dm', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -259,9 +259,6 @@ export default class EnhancedTable extends React.Component {
       body: JSON.stringify(payload)
     }).then(res => {
         let newTableData = this.state.menuData;
-       /*  newTableData.map((current) => {
-            current['ordered'] = 0;
-        }); */
         this.setState({showalert: true, order: 'asc',
         orderBy: 'id',
         selected: [],

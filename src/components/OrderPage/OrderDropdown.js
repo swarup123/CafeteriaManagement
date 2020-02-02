@@ -3,6 +3,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { Redirect } from 'react-router-dom';
+
 
 const options = [
   'MyOrders',
@@ -11,34 +13,47 @@ const options = [
 
 const ITEM_HEIGHT = 48;
 
-export default function LongMenu() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
+export default class LongMenu extends React.Component {
+  
+  
+  constructor(props) {
+    super(props);
+    this.state = {
+      anchorEl: null,
+      navigate: false,
+      open: false
+    };
+  }
 
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget);
+  handleClick(event){
+    this.setState({anchorEl: event.currentTarget,  open: true});
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  handleClose(){
+    this.setState({open: false, navigate: true});
   };
 
+render() {
+  if(this.state.navigate){
+    localStorage.clear();
+    return <Redirect to="/" push={true}/>
+  }
   return (
     <div>
       <IconButton
         aria-label="more"
         aria-controls="long-menu"
         aria-haspopup="true"
-        onClick={handleClick}
+        onClick={this.handleClick.bind(this)}
       >
         <MoreVertIcon />
       </IconButton>
       <Menu
         id="long-menu"
-        anchorEl={anchorEl}
+        anchorEl={this.state.anchorEl}
         keepMounted
-        open={open}
-        onClose={handleClose}
+        open={this.state.open}
+        onClose={this.handleClose.bind(this)}
         PaperProps={{
           style: {
             maxHeight: ITEM_HEIGHT * 4.5,
@@ -47,11 +62,12 @@ export default function LongMenu() {
         }}
       >
         {options.map(option => (
-          <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
+          <MenuItem key={option} selected={option === 'Pyxis'} onClick={this.handleClose.bind(this)}>
             {option}
           </MenuItem>
         ))}
       </Menu>
     </div>
   );
+}
 }

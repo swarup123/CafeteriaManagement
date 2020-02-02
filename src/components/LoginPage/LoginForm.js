@@ -1,10 +1,10 @@
 import React from 'react';
 import { Paper, withStyles, Grid, TextField, Button, FormControlLabel, Checkbox } from '@material-ui/core';
 import { Face, Fingerprint } from '@material-ui/icons';
-const API = 'http://localhost:8090/cafe/otp';
+const API = 'http://10.16.34.17:8090/cafe/otp';
 import axios from 'axios';
 import {
-    Link
+    Redirect
 } from 'react-router-dom';
 
 const headers = {
@@ -32,7 +32,8 @@ class LoginForm extends React.Component {
             errorText: '',
             otpValue: 0,
             userName: '',
-            redirect: '/'
+            userType: '',
+            status:0
         };
     }
 
@@ -65,14 +66,20 @@ class LoginForm extends React.Component {
         })
         .then((response) => {
             if (response && response.status === 200 && response.data.userType === 'CUSTOMER') {
-                this.setState({redirect: '/placeOrder'}); 
+                
                 localStorage.setItem('phoneNo', this.state.phone);
                 localStorage.setItem('userName', this.state.userName);
                 localStorage.setItem('userType', response.data.userType);
+                localStorage.setItem('userId', response.data.userId);
+                this.setState({userType: response.data.userType});
             } else if(response && response.status === 200 && response.data.userType === 'VENDOR'){
-                this.setState({redirect: '/menuPage'}); 
+                localStorage.setItem('phoneNo', this.state.phone);
+                localStorage.setItem('userName', this.state.userName);
+                localStorage.setItem('userType', response.data.userType);
+                localStorage.setItem('userId', response.data.userId);
+                this.setState({userType: response.data.userType});
             } else {
-                this.setState({redirect: '/'});
+                this.setState({userType: null});
             }                       
         })
         .catch((error) => {
@@ -89,10 +96,16 @@ class LoginForm extends React.Component {
     }
 
     render() {
+        if(this.state.userType === 'CUSTOMER'){
+            return <Redirect to="/placeOrder" push={true}/>
+        } else if(this.state.userType === 'VENDOR'){
+            return <Redirect to="/menuPage" push={true}/>
+        }
         const { classes } = this.props;
         return (
             <Paper className={classes.padding}>
                 <div className={classes.margin}>
+                    <h2>Smart Cafeteria</h2>
                     <Grid container spacing={8} alignItems="flex-end">
                         <Grid item>
                             <Face />
@@ -131,7 +144,7 @@ class LoginForm extends React.Component {
                     </Grid>
                     { this.state.loginButton &&
                         <Grid container justify="center" style={{ marginTop: '10px' }}>
-                            <Button variant="outlined" color="primary" style={{ textTransform: "none" }} onClick={this.handleLogin.bind(this)} component={Link} to={this.state.redirect}>Login</Button>
+                            <Button variant="outlined" color="primary" style={{ textTransform: "none" }} onClick={this.handleLogin.bind(this)} >Login</Button>
                         </Grid>
                     }
                     { this.state.otpButton && this.state.phone.length === 10 &&

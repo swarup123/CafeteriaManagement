@@ -39,7 +39,8 @@ input[type=number] {
   }
 
 .place-order-button {
-  margin-top: 20px !important; 
+  margin-top: 5px !important; 
+  margin-bottom: 5px !important; 
 }
 
 .MuiTableCell-sizeSmall.MuiTableCell-paddingCheckbox {
