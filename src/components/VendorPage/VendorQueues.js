@@ -17,6 +17,7 @@ import TextField from '@material-ui/core/TextField';
 import { Info, Cancel, CheckCircle } from '@material-ui/icons';
 import Button from '@material-ui/core/Button';
 import './vendor.css';
+import LogoutMenu from '../OrderPage/OrderDropdown';
 
 const useStyles = makeStyles(theme => ({
     table: {
@@ -118,7 +119,7 @@ const CustomizedExpansionPanels = () => {
         "orderTime": row.orderTime
       }
     ];
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}`, {
+    fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -126,11 +127,11 @@ const CustomizedExpansionPanels = () => {
       },
       body: JSON.stringify(payload)
     }).then(() => {
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}/{orderState}?orderState=PLACED`)
+      fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=PLACED`)
       .then(res => res.json())
       .then(res => setPlacedRows(res))
   
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}/{orderState}?orderState=GETTING_PREPARED`)
+      fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=GETTING_PREPARED`)
       .then(res => res.json())
       .then(res => setInProgressRows(res))
     })
@@ -146,7 +147,7 @@ const CustomizedExpansionPanels = () => {
         "orderTime": row.orderTime
       }
     ];
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}`, {
+    fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -154,11 +155,11 @@ const CustomizedExpansionPanels = () => {
       },
       body: JSON.stringify(payload)
     }).then(() => {
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}/{orderState}?orderState=GETTING_PREPARED`)
+      fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=GETTING_PREPARED`)
       .then(res => res.json())
       .then(res => setInProgressRows(res))
   
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}/{orderState}?orderState=PACKED`)
+      fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=PACKED`)
       .then(res => res.json())
       .then(res => setpackedOrderRows(res))
     })
@@ -174,7 +175,7 @@ const CustomizedExpansionPanels = () => {
         "orderTime": row.orderTime
       }
     ];
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}`, {
+    fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -182,11 +183,11 @@ const CustomizedExpansionPanels = () => {
       },
       body: JSON.stringify(payload)
     }).then(() => {
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}/{orderState}?orderState=PACKED`)
+      fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=PACKED`)
       .then(res => res.json())
       .then(res => setpackedOrderRows(res))
   
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}/{orderState}?orderState=NOTIFIED_DELIVERY`)
+      fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=NOTIFIED_DELIVERY`)
       .then(res => res.json())
       .then(res => setpickUpRows(res))
     })
@@ -202,7 +203,7 @@ const CustomizedExpansionPanels = () => {
         "orderTime": row.orderTime
       }
     ];
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}`, {
+    fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -210,11 +211,11 @@ const CustomizedExpansionPanels = () => {
       },
       body: JSON.stringify(payload)
     }).then(() => {
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}/{orderState}?orderState=NOTIFIED_DELIVERY`)
+      fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=NOTIFIED_DELIVERY`)
       .then(res => res.json())
       .then(res => setpickUpRows(res))
   
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}/{orderState}?orderState=DELIVERED`)
+      fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=DELIVERED`)
       .then(res => res.json())
       .then(res => setDeliveredRows(res))
     })
@@ -231,7 +232,7 @@ const CustomizedExpansionPanels = () => {
         "orderTime": row.orderTime
       }
     ];
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}`, {
+    fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -240,7 +241,7 @@ const CustomizedExpansionPanels = () => {
       body: JSON.stringify(payload)
     }).then(() => {
       handleClose();
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}/{orderState}?orderState=PLACED`)
+      fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=PLACED`)
       .then(res => res.json())
       .then(res => setPlacedRows(res))
     })
@@ -259,23 +260,23 @@ const CustomizedExpansionPanels = () => {
   const open1 = Boolean(anchorEll);
 
   useEffect(() => {
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}/{orderState}?orderState=PLACED`)
+    fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=PLACED`)
     .then(res => res.json())
     .then(res => setPlacedRows(res))
 
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}/{orderState}?orderState=GETTING_PREPARED`)
+    fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=GETTING_PREPARED`)
     .then(res => res.json())
     .then(res => setInProgressRows(res))
 
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}/{orderState}?orderState=PACKED`)
+    fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=PACKED`)
     .then(res => res.json())
     .then(res => setpackedOrderRows(res))
 
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}/{orderState}?orderState=NOTIFIED_DELIVERY`)
+    fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=NOTIFIED_DELIVERY`)
     .then(res => res.json())
     .then(res => setpickUpRows(res))
 
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${localStorage.userId}/{orderState}?orderState=DELIVERED`)
+    fetch(`http://localhost:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=DELIVERED`)
     .then(res => res.json())
     .then(res => setDeliveredRows(res))
   }, []);
@@ -284,6 +285,7 @@ const CustomizedExpansionPanels = () => {
   return (
     <div>
         <h2>Orders Received</h2>
+        <LogoutMenu />
       <ExpansionPanel square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
         <ExpansionPanelSummary aria-controls="panel1d-content" id="panel1d-header">
           <Typography>Orders placed</Typography>

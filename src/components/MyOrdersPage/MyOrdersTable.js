@@ -45,6 +45,7 @@ function getSorting(order, orderBy) {
 const headCells = [
   { id: 'customerOrderId', disablePadding: true, label: 'id'},
   { id: 'orderTime', numeric: false, disablePadding: true, label: 'Ordered At' },
+  { id: 'deliverTime', disablePadding: true, label: 'Excepted Delivery Time'},
   { id: 'total', numeric: true, disablePadding: true, label: 'Price' },
   { id: 'orderedState', disablePadding: true, label: 'Status' },
   { id: 'details', disablePadding: true, label: 'Details'},
@@ -117,7 +118,8 @@ export default class EnhancedTable extends React.Component {
       dense: true,
       rowsPerPage: 5,
       menuData: [],
-      showalert: false
+      showalert: false,
+      cancel: false
     };
     this.userId = localStorage.getItem('userId');
     this.menuId = '';
@@ -132,7 +134,7 @@ export default class EnhancedTable extends React.Component {
         "orderTime": order.orderTime
       }
         
-    fetch('http://10.16.34.17:8090/cafe/order/cancel', {
+    fetch('http://localhost:8090/cafe/order/cancel', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -148,10 +150,11 @@ export default class EnhancedTable extends React.Component {
         this.setState({showalert: true, order: 'asc',
         orderBy: 'id',
         selected: [],
-        page: 0
+        page: 0,
+        cancel: true
         });
         setTimeout(() => {
-          this.setState({showalert: false, menuData: someData})
+          this.setState({showalert: false,cancel: false, menuData: someData})
         },3000)
     })
   }
@@ -167,7 +170,7 @@ export default class EnhancedTable extends React.Component {
     return itemStr;
   }
   componentDidMount() {
-    fetch(`http://10.16.34.17:8090/cafe/orders/customer/${this.userId}`)
+    fetch(`http://localhost:8090/cafe/orders/customer/${this.userId}`)
     .then(res => res.json())
     .then(res => {    
       this.setState({ menuData: res });
@@ -204,9 +207,13 @@ export default class EnhancedTable extends React.Component {
 
     return (
       <div className='order-table-panel'>
-        {this.state.showalert && (<Alert severity="info">
+        {this.state.showalert && !this.state.cancel && (<Alert severity="info">
           <AlertTitle>Info</AlertTitle>
           {`Your order has been placed!!`}
+        </Alert>)}
+        {this.state.showalert && this.state.cancel && (<Alert severity="info">
+          <AlertTitle>Info</AlertTitle>
+          {`Your order has been cancelled!!`}
         </Alert>)}
         <LogoutMenu />
         <Paper className='order-table-paper'>
@@ -244,13 +251,13 @@ export default class EnhancedTable extends React.Component {
                       <TableCell component="th" id={labelId} scope="row" padding="none">     {this.getDetails(row.itemQuantities)}          
                       </TableCell>                    
                       <TableCell component="th" id={labelId} scope="row" padding="none">
-                        <Button variant="contained" color="primary"           
-          className='place-order-button'
-            disabled={row.orderState === 'PLACED' ? false : true} 
-          onClick={() => this.cancelOrder(row)}
-          >
-          cancel
-          </Button>
+                        <Button variant="contained" color="primary"     
+                        className='place-order-button'
+                          disabled={row.orderState === 'PLACED' ? false : true} 
+                        onClick={() => this.cancelOrder(row)}
+                        >
+                        cancel
+                        </Button>
 
                       </TableCell>
                     </TableRow>

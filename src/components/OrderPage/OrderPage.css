@@ -50,3 +50,16 @@ input[type=number] {
 .MuiTableCell-head {
   background: lightblue;
 }
+
+.button-link {
+  background-color: white;
+  border: none;
+  color: blue;
+  padding: 10px 24px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  font-size: 20px;
+  margin: 4px 2px;
+  cursor: pointer;
+  }

@@ -131,12 +131,11 @@ export default class EnhancedTable extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`http://10.16.34.17:8090/cafe/order/display/${localStorage.userId}`)
+    fetch(`http://localhost:8090/cafe/order/display/${parseInt(localStorage.userId)}`)
     .then(res => res.json())
     .then(res => {
-      console.log(res);
       this.setState({ menuData: res.itemQuantities });
-      this.userId = localStorage.userId;
+      this.userId = parseInt(localStorage.userId);
       this.menuId = res.menuId
     })
   }
@@ -230,7 +229,7 @@ export default class EnhancedTable extends React.Component {
       "total": null,
       "orderState": null
     }
-    fetch('http://10.16.34.17:8090/cafe/order/place', {
+    fetch('http://localhost:8090/cafe/order/place', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

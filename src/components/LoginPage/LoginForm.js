@@ -1,7 +1,7 @@
 import React from 'react';
 import { Paper, withStyles, Grid, TextField, Button, FormControlLabel, Checkbox } from '@material-ui/core';
 import { Face, Fingerprint } from '@material-ui/icons';
-const API = 'http://10.16.34.17:8090/cafe/otp';
+const API = 'http://localhost:8090/cafe/otp';
 import axios from 'axios';
 import {
     Redirect
