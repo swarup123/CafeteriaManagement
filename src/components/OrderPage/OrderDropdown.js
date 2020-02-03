@@ -20,7 +20,8 @@ export default class LongMenu extends React.Component {
       goBack: false,
       goBackRoute: false,
       placedOrderValue: false,
-      placedMenuValue: false
+      placedMenuValue: false,
+      placeReport: false
     };
   }
 
@@ -56,6 +57,10 @@ export default class LongMenu extends React.Component {
     this.setState({placedMenuValue: true});
   }
 
+  handleReport(){
+    this.setState({placeReport: true});
+  }
+
 
 render() {
   if(this.state.navigate){
@@ -85,6 +90,10 @@ render() {
 
   if(this.state.placedMenuValue){
     return <Redirect to="/menuPage" push={true}/>
+  }
+
+  if(this.state.placeReport){
+    return <Redirect to="/chartReport" push={true}/>
   }
   return (
     <div>
@@ -126,6 +135,7 @@ render() {
             }
             { localStorage.userType === 'VENDOR' &&
               <button  className='button-link' onClick={this.handleMenuOrder.bind(this)}>View menu</button>
+              <button  className='button-link' onClick={this.handleReport.bind(this)}>View Report</button>
             }
             <button className='button-link' onClick={this.handleClose.bind(this)}>Log out</button>
           {/* </ul> */}

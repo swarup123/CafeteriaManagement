@@ -10,6 +10,7 @@ import MenuPage from './components/MenuPage/MenuPage';
 import MyOrderPage from './components/MyOrdersPage/MyOrdersPage';
 import './App.css';
 import VendorQueues from './components/VendorPage/VendorQueues';
+import BarChartReport from './components/ReportPage/BarChartReport';
 
 
 const Login = () => (
@@ -28,6 +29,7 @@ class App extends Component {
           <Route path="/menuPage" component={MenuPage} />
           <Route path="/myOrderPage" component={MyOrderPage} />
           <Route path="/vendorQueue" component={VendorQueues} />
+          <Route path="/chartReport" component={BarChartReport} />
         </div>
       </Router>
     );
