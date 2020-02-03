@@ -50,9 +50,9 @@ const headCells = [
 
 class EnhancedTableHead extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
+    // constructor(props) {
+    //     super(props);
+    // }
 
     render() {
         const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = this.props;
@@ -123,12 +123,12 @@ export default class EnhancedTable extends React.Component {
       menuData: [],
       showalert: false
     };
-    this.userId = parseInt(localStorage.userId);
+    this.userId = parseInt(localStorage.userId,10);
     this.estimatedTime = ''
   }
 
   componentDidMount() {
-    fetch(`http://10.16.34.17:8090/cafe/dm/${parseInt(localStorage.userId)}`)
+    fetch(`http://10.16.34.17:8090/cafe/dm/${parseInt(localStorage.userId,10)}`)
     .then(res => res.json())
     .then(res => {
       console.log(res);
@@ -166,6 +166,7 @@ export default class EnhancedTable extends React.Component {
         if(current.id === row.id) {
           newTableData[index]['ordered'] = 0
         }
+        return current;
       });
       
       this.setState({menuData: newTableData});       
@@ -194,6 +195,7 @@ export default class EnhancedTable extends React.Component {
       if(current.id === rowId) {
         newTableData[index]['availableQuantity'] = event.target.value;
       }
+      return current;
     });
     
     this.setState({menuData: newTableData}); //New table set and view updated
@@ -206,6 +208,7 @@ export default class EnhancedTable extends React.Component {
       if(current.id === rowId) {
         newTableData[index]['maxQuantity'] = event.target.value;
       }
+      return current;
     });
     
     this.setState({menuData: newTableData}); //New table set and view updated
@@ -221,6 +224,7 @@ export default class EnhancedTable extends React.Component {
       if(selectedItems.indexOf(current.name) > -1 ) {
         orderData.push(current);
       }
+      return current;
     });
 
     if(orderData.length === 0) {
@@ -317,7 +321,7 @@ export default class EnhancedTable extends React.Component {
                           InputLabelProps={{
                               shrink: true,
                           }}
-                          onChange ={(e)=> this.handleQtyChange(e, row.id)}
+                          onChange={(e)=> this.handleQtyChange(e, row.id)}
                           />
                       </TableCell>
                       <TableCell hidden>{row.id}</TableCell>
@@ -327,7 +331,7 @@ export default class EnhancedTable extends React.Component {
                           InputLabelProps={{
                               shrink: true,
                           }}
-                          onChange ={(e)=> this.handleMaxQtyChange(e, row.id)} />
+                          onChange={(e)=> this.handleMaxQtyChange(e, row.id)} />
                       </TableCell>
                       </TableRow>
                     );

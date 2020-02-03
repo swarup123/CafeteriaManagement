@@ -12,10 +12,6 @@ import Paper from '@material-ui/core/Paper';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import './MyOrdersPage.css';
 import LogoutMenu from '../OrderPage/OrderDropdown';
-import { Info } from '@material-ui/icons';
-import Popover from '@material-ui/core/Popover';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
 function desc(a, b, orderBy) {
@@ -56,13 +52,13 @@ const headCells = [
 
 class EnhancedTableHead extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
+    // constructor(props) {
+    //     super(props);
+    // }
     
 
     render() {
-        const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = this.props;
+        const { order, orderBy, onRequestSort } = this.props;
         const createSortHandler = property => event => {
             onRequestSort(event, property);
         };
@@ -142,13 +138,12 @@ export default class EnhancedTable extends React.Component {
       },
       body: JSON.stringify(payload)
     }).then(res => {
-        let newTableData = this.state.menuData;
-        let someData = newTableData.map((current) => {
-          if(current.customerOrderId === order.customerOrderId )
-            current['orderedState'] = res.orderState;
-        });
-        this.setState({showalert: true
-        });
+        //let newTableData = this.state.menuData;
+        // let someData = newTableData.map((current) => {
+        //   if(current.customerOrderId === order.customerOrderId )
+        //     current['orderedState'] = res.orderState;
+        // });
+        this.setState({ showalert: true });
         setTimeout(() => {
 
           this.setState({showalert: false});
@@ -164,6 +159,7 @@ export default class EnhancedTable extends React.Component {
     let itemStr = '';
     menuItems.map((item)=>{
       itemStr = `${itemStr} Name : ${item.itemName} , Price : ${item.price}  , Quantity : ${item.ordered}`;
+      return item;
     });
     return itemStr;
   }
@@ -172,7 +168,7 @@ export default class EnhancedTable extends React.Component {
   }
 
   fetchMyOrders = () => {
-    fetch(`http://10.16.34.17:8090/cafe/orders/customer/${parseInt(localStorage.getItem('userId'))}`)
+    fetch(`http://10.16.34.17:8090/cafe/orders/customer/${parseInt(localStorage.getItem('userId'),10)}`)
     .then(res => res.json())
     .then(res => {    
       this.setState({ menuData: res });
@@ -208,8 +204,6 @@ export default class EnhancedTable extends React.Component {
   }
   
   render() {
-    const isSelected = name => this.state.selected.indexOf(name) !== -1;
-
     const emptyRows = this.state.rowsPerPage - Math.min(this.state.rowsPerPage, this.state.menuData.length - this.state.page * this.state.rowsPerPage);
 
     return (

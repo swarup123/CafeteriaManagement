@@ -34,10 +34,7 @@ const useStyles = makeStyles(theme => ({
       }
   }));
 let rowToBeCancelled = {};
-  
-function createData(name, calories, data) {
-    return { name, calories, data };
-}
+
   
 const ExpansionPanel = withStyles({
   root: {
@@ -102,8 +99,10 @@ const CustomizedExpansionPanels = () => {
     let detailsString = '';
     itemQuantities.map(current => {
       detailsString = `${detailsString} Item Name: ${current.itemName} Quantity: ${current.ordered}`
+      return current;
     });
     setDetails(detailsString);
+    return;
   };
 
   const handlePopoverClose = () => {
@@ -120,7 +119,7 @@ const CustomizedExpansionPanels = () => {
         "orderTime": row.orderTime
       }
     ];
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}`, {
+    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -128,11 +127,11 @@ const CustomizedExpansionPanels = () => {
       },
       body: JSON.stringify(payload)
     }).then(() => {
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=PLACED`)
+      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}/{orderState}?orderState=PLACED`)
       .then(res => res.json())
       .then(res => setPlacedRows(res))
   
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=GETTING_PREPARED`)
+      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}/{orderState}?orderState=GETTING_PREPARED`)
       .then(res => res.json())
       .then(res => {
         alert('your order has been moved to the next queue');
@@ -152,7 +151,7 @@ const CustomizedExpansionPanels = () => {
         "orderTime": row.orderTime
       }
     ];
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}`, {
+    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -160,11 +159,11 @@ const CustomizedExpansionPanels = () => {
       },
       body: JSON.stringify(payload)
     }).then(() => {
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=GETTING_PREPARED`)
+      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}/{orderState}?orderState=GETTING_PREPARED`)
       .then(res => res.json())
       .then(res => setInProgressRows(res))
   
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=PACKED`)
+      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}/{orderState}?orderState=PACKED`)
       .then(res => res.json())
       .then(res => {
         alert('your order has been moved to the next queue');
@@ -184,7 +183,7 @@ const CustomizedExpansionPanels = () => {
         "orderTime": row.orderTime
       }
     ];
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}`, {
+    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -192,11 +191,11 @@ const CustomizedExpansionPanels = () => {
       },
       body: JSON.stringify(payload)
     }).then(() => {
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=PACKED`)
+      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}/{orderState}?orderState=PACKED`)
       .then(res => res.json())
       .then(res => setpackedOrderRows(res))
   
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=NOTIFIED_DELIVERY`)
+      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}/{orderState}?orderState=NOTIFIED_DELIVERY`)
       .then(res => res.json())
       .then(res => {
         alert('your order has been moved to the next queue');
@@ -216,7 +215,7 @@ const CustomizedExpansionPanels = () => {
         "orderTime": row.orderTime
       }
     ];
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}`, {
+    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -224,11 +223,11 @@ const CustomizedExpansionPanels = () => {
       },
       body: JSON.stringify(payload)
     }).then(() => {
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=NOTIFIED_DELIVERY`)
+      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}/{orderState}?orderState=NOTIFIED_DELIVERY`)
       .then(res => res.json())
       .then(res => setpickUpRows(res))
   
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=DELIVERED`)
+      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}/{orderState}?orderState=DELIVERED`)
       .then(res => res.json())
       .then(res => {
         alert('your order has been moved to the next queue');
@@ -249,7 +248,7 @@ const CustomizedExpansionPanels = () => {
         "orderTime": row.orderTime
       }
     ];
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}`, {
+    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -258,7 +257,7 @@ const CustomizedExpansionPanels = () => {
       body: JSON.stringify(payload)
     }).then(() => {
       handleClose();
-      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=PLACED`)
+      fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}/{orderState}?orderState=PLACED`)
       .then(res => res.json())
       .then(res => {
         alert('This order has been rejected');
@@ -280,23 +279,23 @@ const CustomizedExpansionPanels = () => {
   const open1 = Boolean(anchorEll);
 
   useEffect(() => {
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=PLACED`)
+    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}/{orderState}?orderState=PLACED`)
     .then(res => res.json())
     .then(res => setPlacedRows(res))
 
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=GETTING_PREPARED`)
+    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}/{orderState}?orderState=GETTING_PREPARED`)
     .then(res => res.json())
     .then(res => setInProgressRows(res))
 
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=PACKED`)
+    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}/{orderState}?orderState=PACKED`)
     .then(res => res.json())
     .then(res => setpackedOrderRows(res))
 
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=NOTIFIED_DELIVERY`)
+    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}/{orderState}?orderState=NOTIFIED_DELIVERY`)
     .then(res => res.json())
     .then(res => setpickUpRows(res))
 
-    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId)}/{orderState}?orderState=DELIVERED`)
+    fetch(`http://10.16.34.17:8090/cafe/vendor/orders/${parseInt(localStorage.userId,10)}/{orderState}?orderState=DELIVERED`)
     .then(res => res.json())
     .then(res => setDeliveredRows(res))
   }, []);

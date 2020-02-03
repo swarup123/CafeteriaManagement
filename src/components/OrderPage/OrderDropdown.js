@@ -1,7 +1,6 @@
 import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Redirect } from 'react-router-dom';
 
@@ -116,13 +115,13 @@ render() {
             { localStorage.userType === 'CUSTOMER' && !localStorage.hasOwnProperty('navigateValue') &&
               <button  className='button-link' onClick={this.handleOrder.bind(this)}>My Orders</button>
             }
-            { localStorage.userType === 'CUSTOMER' && parseInt(localStorage.navigateValue) === 0 &&
+            { localStorage.userType === 'CUSTOMER' && parseInt(localStorage.navigateValue,10) === 0 &&
               <button  className='button-link' onClick={this.handleGoRoute.bind(this)}>Place Order</button>
             }
             { localStorage.userType === 'VENDOR' && !localStorage.hasOwnProperty('placeValue') &&
               <button  className='button-link' onClick={this.handlePlacedOrder.bind(this)}>View Order</button>
             }
-            { localStorage.userType === 'VENDOR' && parseInt(localStorage.placeValue) === 0 &&
+            { localStorage.userType === 'VENDOR' && parseInt(localStorage.placeValue,10) === 0 &&
               <button  className='button-link' onClick={this.handleBackOrder.bind(this)}>Place Order</button>
             }
             { localStorage.userType === 'VENDOR' &&

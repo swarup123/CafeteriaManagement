@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router,
   Route
 } from 'react-router-dom';
-import HomePage from './components/HomePage/HomePage';
 import LoginPage from './components/LoginPage/LoginPage';
 //import MenuDetails from './components/MenuDetails/MenuDetails';
 import OrderPage from './components/OrderPage/OrderPage';
@@ -12,21 +11,11 @@ import MyOrderPage from './components/MyOrdersPage/MyOrdersPage';
 import './App.css';
 import VendorQueues from './components/VendorPage/VendorQueues';
 
-const Home = () => (
-  <HomePage />
-);
 
 const Login = () => (
   <LoginPage />
 );
 
-const Order = () => (
-  <OrderPage />
-);
-
-const VendorQueue = () => (
-  <VendorQueues />
-);
 
 class App extends Component {
 

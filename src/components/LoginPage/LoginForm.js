@@ -119,7 +119,7 @@ class LoginForm extends React.Component {
                             <Fingerprint />
                         </Grid>
                         <Grid item md={true} sm={true} xs={true}>
-                            <TextField id="phoneNumber" label="Phone Number" type="number" onChange={this.handleOnChange.bind(this)} helperText= {this.state.errorText} fullWidth autoFocus required />
+                            <TextField id="phoneNumber" label="Phone Number" type="number" onChange={this.handleOnChange.bind(this)} helperText={this.state.errorText} fullWidth autoFocus required />
                         </Grid>
                     </Grid>
                     { !this.state.otpButton &&
