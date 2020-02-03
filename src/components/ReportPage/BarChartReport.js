@@ -21,11 +21,11 @@ class BarChartReport extends React.Component {
     ]
   };
 }
-  componentDidMount() {
+  async componentDidMount() {
     try {
-      //let response = await fetch("http://localhost:8090/cafe/vendor/orders");
-      //let response = await fetch(res);
-      //let orders = await response.json();
+      // let response = await fetch("http://localhost:8090/cafe/vendor/orders");
+      // //let responsea = await fetch(res);
+      // let orders = await response.json();
       let orders = res;
       let sales = [];
       let dates = [];
