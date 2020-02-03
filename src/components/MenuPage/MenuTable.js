@@ -123,12 +123,12 @@ export default class EnhancedTable extends React.Component {
       menuData: [],
       showalert: false
     };
-    this.userId = parseInt(localStorage.getItem('userId'));
+    this.userId = parseInt(localStorage.userId);
     this.estimatedTime = ''
   }
 
   componentDidMount() {
-    fetch(`http://10.16.34.17:8090/cafe/dm/${this.userId}`)
+    fetch(`http://10.16.34.17:8090/cafe/dm/${parseInt(localStorage.userId)}`)
     .then(res => res.json())
     .then(res => {
       console.log(res);
