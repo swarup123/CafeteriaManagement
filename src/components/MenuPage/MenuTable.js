@@ -128,7 +128,7 @@ export default class EnhancedTable extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`http://localhost:8090/cafe/dm/${this.userId}`)
+    fetch(`http://10.16.34.17:8090/cafe/dm/${this.userId}`)
     .then(res => res.json())
     .then(res => {
       console.log(res);
@@ -234,7 +234,7 @@ export default class EnhancedTable extends React.Component {
       "items": orderData,
       "validFor":null     
     }
-    fetch('http://localhost:8090/cafe/dm', {
+    fetch('http://10.16.34.17:8090/cafe/dm', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -265,7 +265,7 @@ export default class EnhancedTable extends React.Component {
           <AlertTitle>Info</AlertTitle>
           {`Today's menu created successfully!!`}
         </Alert>)}
-        <h2>Today's menu</h2>
+        <h3>Today's menu</h3>
         <LogoutMenu />
         <Paper className='order-table-paper'>
           <TableContainer>

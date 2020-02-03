@@ -5,7 +5,7 @@ class MyOrdersPage extends Component {
   render() {
     return (
       <div className="MenuPage">
-        <h2>My Orders</h2>
+        <h3>My Orders</h3>
         <EnhancedTable />        
       </div>
     );

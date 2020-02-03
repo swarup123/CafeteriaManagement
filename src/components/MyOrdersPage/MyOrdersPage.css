@@ -12,11 +12,12 @@ input[type=number] {
 
 .order-table-panel {
     width: 100%;
-    padding: 20px;
+    /* padding: 20px; */
 }
 
 .order-table-paper {
-    width: 100%;
+    width: 80%;
+    margin: auto;
 }
 
 .order-table {
@@ -50,4 +51,39 @@ input[type=number] {
 
 .MuiTableCell-head {
   background: lightblue;
+}
+.MenuPage {
+  background-image: url("../../images/food2.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+}
+
+.MenuPage .Mui-disabled, .OrderPage .Mui-disabled {
+  background-color: lavender !important;
+}
+
+.OrderPage h3 {
+  color: #fff;
+}
+
+.MenuPage h3 {
+  padding-top: 20px;
+}
+
+.OrderPage {
+  background-image: url("../../images/food3.jpg");
+  background-repeat: no-repeat;
+  background-size: cover; 
+  height: 100%; 
+}
+
+.MuiTableCell-sizeSmall.MuiTableCell-paddingCheckbox {
+  width: 24px;
+  padding: 10px 12px 10px 16px !important;
+}
+
+.MuiTableContainer-root {
+  max-height: 80px;
+  overflow: auto;
 }

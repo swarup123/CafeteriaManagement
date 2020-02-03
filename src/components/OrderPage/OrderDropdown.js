@@ -74,6 +74,7 @@ render() {
         aria-controls="long-menu"
         aria-haspopup="true"
         onClick={this.handleClick.bind(this)}
+        className='icon-button'
       >
         <MoreVertIcon />
       </IconButton>

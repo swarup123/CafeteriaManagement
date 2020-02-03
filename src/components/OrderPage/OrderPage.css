@@ -12,7 +12,7 @@ input[type=number] {
 
 .order-table-panel {
     width: 100%;
-    padding: 20px;
+    /* padding: 20px; */
 }
 
 .order-table-paper {
@@ -63,3 +63,6 @@ input[type=number] {
   margin: 4px 2px;
   cursor: pointer;
   }
+.icon-button {
+  color: #fff !important;
+}

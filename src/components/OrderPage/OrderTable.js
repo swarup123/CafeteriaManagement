@@ -131,7 +131,7 @@ export default class EnhancedTable extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`http://localhost:8090/cafe/order/display/${parseInt(localStorage.userId)}`)
+    fetch(`http://10.16.34.17:8090/cafe/order/display/${parseInt(localStorage.userId)}`)
     .then(res => res.json())
     .then(res => {
       this.setState({ menuData: res.itemQuantities });
@@ -229,7 +229,7 @@ export default class EnhancedTable extends React.Component {
       "total": null,
       "orderState": null
     }
-    fetch('http://localhost:8090/cafe/order/place', {
+    fetch('http://10.16.34.17:8090/cafe/order/place', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -264,7 +264,7 @@ export default class EnhancedTable extends React.Component {
           <AlertTitle>Info</AlertTitle>
           {`Your order has been placed!!`}
         </Alert>)}
-        <h2>Today's menu</h2>
+        <h3>Today's menu</h3>
         <LogoutMenu />
         <Paper className='order-table-paper'>
           <TableContainer>

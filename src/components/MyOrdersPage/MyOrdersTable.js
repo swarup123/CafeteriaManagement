@@ -43,7 +43,7 @@ function getSorting(order, orderBy) {
 }
 
 const headCells = [
-  { id: 'customerOrderId', disablePadding: true, label: 'id'},
+  { id: 'customerOrderId', label: 'id'},
   { id: 'orderTime', numeric: false, disablePadding: true, label: 'Ordered At' },
   { id: 'deliverTime', disablePadding: true, label: 'Excepted Delivery Time'},
   { id: 'total', numeric: true, disablePadding: true, label: 'Price' },
@@ -134,7 +134,7 @@ export default class EnhancedTable extends React.Component {
         "orderTime": order.orderTime
       }
         
-    fetch('http://localhost:8090/cafe/order/cancel', {
+    fetch('http://10.16.34.17:8090/cafe/order/cancel', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -147,14 +147,12 @@ export default class EnhancedTable extends React.Component {
           if(current.customerOrderId === order.customerOrderId )
             current['orderedState'] = res.orderState;
         });
-        this.setState({showalert: true, order: 'asc',
-        orderBy: 'id',
-        selected: [],
-        page: 0,
-        cancel: true
+        this.setState({showalert: true
         });
         setTimeout(() => {
-          this.setState({showalert: false,cancel: false, menuData: someData})
+
+          this.setState({showalert: false});
+          this.fetchMyOrders();
         },3000)
     })
   }
@@ -170,7 +168,11 @@ export default class EnhancedTable extends React.Component {
     return itemStr;
   }
   componentDidMount() {
-    fetch(`http://localhost:8090/cafe/orders/customer/${this.userId}`)
+    this.fetchMyOrders();
+  }
+
+  fetchMyOrders = () => {
+    fetch(`http://10.16.34.17:8090/cafe/orders/customer/${parseInt(localStorage.getItem('userId'))}`)
     .then(res => res.json())
     .then(res => {    
       this.setState({ menuData: res });
@@ -199,6 +201,11 @@ export default class EnhancedTable extends React.Component {
   handleChangePage = (event, newPage) => {
     this.setState({ page: newPage });
   };
+
+  formatDate = (date) => {
+    let newDate = new Date(date);
+    return `${newDate.toLocaleDateString()} ${newDate.toLocaleTimeString()}`
+  }
   
   render() {
     const isSelected = name => this.state.selected.indexOf(name) !== -1;
@@ -240,17 +247,20 @@ export default class EnhancedTable extends React.Component {
   
                     return (
                       <TableRow>
-                        <TableCell component="th" id={labelId} scope="row" padding="none">{row.customerOrderId}</TableCell>
-                        <TableCell component="th" id={labelId} scope="row" padding="none">
-                          {row.orderTime}
+                        <TableCell component="th" id={labelId} scope="row">{row.customerOrderId}</TableCell>
+                        <TableCell component="th" id={labelId} scope="row" >
+                        {this.formatDate(row.orderTime)}
                         </TableCell>
-                        <TableCell component="th" id={labelId} scope="row" padding="none">{row.total}</TableCell>                       
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
+                        <TableCell component="th" id={labelId} scope="row">
+                          {this.formatDate(row.deliverTime)}
+                        </TableCell>
+                        <TableCell component="th" id={labelId} scope="row" >{row.total}</TableCell>                       
+                      <TableCell component="th" id={labelId} scope="row" >
                         {row.orderState}
                       </TableCell>    
-                      <TableCell component="th" id={labelId} scope="row" padding="none">     {this.getDetails(row.itemQuantities)}          
+                      <TableCell component="th" id={labelId} scope="row" >     {this.getDetails(row.itemQuantities)}          
                       </TableCell>                    
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
+                      <TableCell component="th" id={labelId} scope="row" >
                         <Button variant="contained" color="primary"     
                         className='place-order-button'
                           disabled={row.orderState === 'PLACED' ? false : true} 

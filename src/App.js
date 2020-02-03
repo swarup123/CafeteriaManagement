@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 import HomePage from './components/HomePage/HomePage';
 import LoginPage from './components/LoginPage/LoginPage';
+//import MenuDetails from './components/MenuDetails/MenuDetails';
 import OrderPage from './components/OrderPage/OrderPage';
 import MenuPage from './components/MenuPage/MenuPage';
 import MyOrderPage from './components/MyOrdersPage/MyOrdersPage';
@@ -17,6 +18,14 @@ const Home = () => (
 
 const Login = () => (
   <LoginPage />
+);
+
+const Order = () => (
+  <OrderPage />
+);
+
+const VendorQueue = () => (
+  <VendorQueues />
 );
 
 class App extends Component {

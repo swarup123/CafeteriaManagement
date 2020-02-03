@@ -1,3 +1,18 @@
 .MuiPopover-paper {
     padding: 10px !important;
 }
+
+.vendor-queue-page {
+    background-image: url("../../images/food1.jpg");
+    height: 100%;
+    padding-top: 20px;
+}
+
+.vendor-queue-page .MuiExpansionPanel-root {
+    width: 80%;
+    margin: auto;
+}
+
+.vendor-queue-page h3 {
+    color: #fff;
+}
