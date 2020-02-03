@@ -19,7 +19,9 @@ export default class LongMenu extends React.Component {
       orderNavigate: false,
       placedOrderNavigate: false,
       goBack: false,
-      goBackRoute: false
+      goBackRoute: false,
+      placedOrderValue: false,
+      placedMenuValue: false
     };
   }
 
@@ -47,6 +49,14 @@ export default class LongMenu extends React.Component {
     this.setState({goBackRoute: true});
   }
 
+  handleBackOrder(){
+    this.setState({placedOrderValue: true});
+  }
+
+  handleMenuOrder(){
+    this.setState({placedMenuValue: true});
+  }
+
 
 render() {
   if(this.state.navigate){
@@ -60,12 +70,22 @@ render() {
   }
 
   if(this.state.placedOrderNavigate){
+    localStorage.setItem('placeValue',0);
     return <Redirect to="/vendorQueue" push={true}/>
+  }
+
+  if(this.state.placedOrderValue){
+    localStorage.removeItem('placeValue');
+    return <Redirect to="/placeOrder" push={true}/>
   }
 
   if(this.state.goBackRoute){
     localStorage.removeItem('navigateValue');
     return <Redirect to="/placeOrder" push={true}/>
+  }
+
+  if(this.state.placedMenuValue){
+    return <Redirect to="/menuPage" push={true}/>
   }
   return (
     <div>
@@ -99,8 +119,14 @@ render() {
             { localStorage.userType === 'CUSTOMER' && parseInt(localStorage.navigateValue) === 0 &&
               <button  className='button-link' onClick={this.handleGoRoute.bind(this)}>Place Order</button>
             }
-            { localStorage.userType === 'VENDOR' &&
+            { localStorage.userType === 'VENDOR' && !localStorage.hasOwnProperty('placeValue') &&
               <button  className='button-link' onClick={this.handlePlacedOrder.bind(this)}>View Order</button>
+            }
+            { localStorage.userType === 'VENDOR' && parseInt(localStorage.placeValue) === 0 &&
+              <button  className='button-link' onClick={this.handleBackOrder.bind(this)}>Place Order</button>
+            }
+            { localStorage.userType === 'VENDOR' &&
+              <button  className='button-link' onClick={this.handleMenuOrder.bind(this)}>View menu</button>
             }
             <button className='button-link' onClick={this.handleClose.bind(this)}>Log out</button>
           {/* </ul> */}
