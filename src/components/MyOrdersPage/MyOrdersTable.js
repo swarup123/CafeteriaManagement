@@ -214,11 +214,7 @@ export default class EnhancedTable extends React.Component {
 
     return (
       <div className='order-table-panel'>
-        {this.state.showalert && !this.state.cancel && (<Alert severity="info">
-          <AlertTitle>Info</AlertTitle>
-          {`Your order has been placed!!`}
-        </Alert>)}
-        {this.state.showalert && this.state.cancel && (<Alert severity="info">
+        {this.state.showalert  && (<Alert severity="info">
           <AlertTitle>Info</AlertTitle>
           {`Your order has been cancelled!!`}
         </Alert>)}
