@@ -135,6 +135,8 @@ render() {
             }
             { localStorage.userType === 'VENDOR' &&
               <button  className='button-link' onClick={this.handleMenuOrder.bind(this)}>View menu</button>
+            }
+            {localStorage.userType === 'VENDOR' &&              
               <button  className='button-link' onClick={this.handleReport.bind(this)}>View Report</button>
             }
             <button className='button-link' onClick={this.handleClose.bind(this)}>Log out</button>
