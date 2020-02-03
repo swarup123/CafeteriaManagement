@@ -82,8 +82,3 @@ input[type=number] {
   width: 24px;
   padding: 10px 12px 10px 16px !important;
 }
-
-.MuiTableContainer-root {
-  max-height: 80px;
-  overflow: auto;
-}

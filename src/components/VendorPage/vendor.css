@@ -16,3 +16,8 @@
 .vendor-queue-page h3 {
     color: #fff;
 }
+
+.vendor-queue-page .MuiTableContainer-root {
+    max-height: 80px;
+    overflow: auto;
+}
