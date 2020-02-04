@@ -1,6 +1,7 @@
 import React from 'react';
 import Chart from "react-apexcharts";
 import res from './res.json';
+import LogoutMenu from '../OrderPage/OrderDropdown';
 class BarChartReport extends React.Component {  
   constructor(props) {
     super(props);
@@ -23,10 +24,10 @@ class BarChartReport extends React.Component {
 }
   async componentDidMount() {
     try {
-      // let response = await fetch("http://localhost:8090/cafe/vendor/orders");
-      // //let responsea = await fetch(res);
-      // let orders = await response.json();
-      let orders = res;
+      let response = await fetch("http://10.16.34.17:8090/cafe/vendor/orders");
+      let responsea = await fetch(res);
+      let orders = await response.json();
+      //let orders = res;
       let sales = [];
       let dates = [];
       let dateMap = {};
@@ -75,6 +76,8 @@ class BarChartReport extends React.Component {
     render() {
       return (
         <div className="app">
+          <a href="http://localhost:3000/vendorQueue" >Back</a>
+          <h3>Daily Sales</h3>
           <div className="row">
             <div className="mixed-chart">
               <Chart
